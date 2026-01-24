@@ -1,0 +1,19 @@
+# NutriVision Backend Requirements
+
+# Web Framework
+Flask==2.3.3
+Flask-CORS==4.0.0
+
+# Machine Learning
+tensorflow==2.13.0
+numpy==1.24.3
+Pillow==10.0.0
+
+# Google Gemini API
+google-genai==0.3.0
+
+# Environment Variables
+python-dotenv==1.0.0
+
+# Optional: Production Server
+gunicorn==21.2.0
