@@ -181,11 +181,16 @@ def get_coaching_tip():
         })
     
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         print(f"Error generating coaching tip: {str(e)}")
+        
+        # Check if it's a safety block or other API specific error
         return jsonify({
             "error": str(e),
+            "traceback": traceback.format_exc(),
             "status": "error",
-            "coaching_tip": "Keep up the great work on your nutrition journey!"
+            "coaching_tip": "You're doing great! Keep tracking your meals daily."
         }), 500
 
 @app.route('/coaching/batch', methods=['POST'])
