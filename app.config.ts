@@ -51,8 +51,8 @@ const config: ExpoConfig = {
     supportsTablet: true,
     bundleIdentifier: env.iosBundleId,
     "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
-      }
+      "ITSAppUsesNonExemptEncryption": false
+    }
   },
   android: {
     adaptiveIcon: {
@@ -88,6 +88,9 @@ const config: ExpoConfig = {
     // API configuration
     modelApiUrl: process.env.EXPO_PUBLIC_MODEL_API_URL || "http://localhost:5000",
     geminiApiUrl: process.env.EXPO_PUBLIC_GEMINI_API_URL || "http://localhost:5001",
+    eas: {
+      projectId: "2cd0f50e-925b-4dae-9d9b-f0f36c30eb83",
+    },
   },
   plugins: [
     "expo-router",
