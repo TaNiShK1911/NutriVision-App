@@ -17,3 +17,23 @@ services:
     env: python
     buildCommand: pip install -r backend/requirements.txt
     startCommand: gunicorn -w 1 -b 0.0.0.0:$PORT backend.model_server:app
+
+  # Service 3: Frontend Web App
+  # This serves the Expo web export as a static site
+  - type: static
+    name: nutrivision-web
+    env: static
+    buildCommand: npm install -g pnpm && pnpm install && npx expo export
+    staticPublishPath: dist
+    envVars:
+      - key: EXPO_PUBLIC_MODEL_API_URL
+        fromService:
+          type: web
+          name: nutrivision-model-api
+          property: url
+      - key: EXPO_PUBLIC_GEMINI_API_URL
+        fromService:
+          type: web
+          name: nutrivision-gemini-api
+          property: url
+
