@@ -71,7 +71,7 @@ export default function ScanScreen() {
   const handleGallerySelect = async () => {
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        mediaTypes: ['images'],
         allowsEditing: true,
         aspect: [4, 3],
         quality: 0.8,
@@ -136,19 +136,9 @@ export default function ScanScreen() {
         unit: nutritionInfo.unit,
       });
 
-      // Get coaching tip
-      const todaysSummary = getTodaysSummary();
-      const coachingResponse = await apiClient.getCoachingTip(
-        profile.tdee,
-        todaysSummary.total_calories - totalCalories, // Calories before this meal
-        prediction.label,
-        totalCalories,
-        profile.goal
-      );
-
       Alert.alert(
         'Meal Logged!',
-        `${formatFoodLabel(prediction.label)} logged (${totalCalories} kcal)\n\n💡 ${coachingResponse.coaching_tip}`,
+        `${formatFoodLabel(prediction.label)} logged (${totalCalories} kcal)`,
         [
           {
             text: 'OK',

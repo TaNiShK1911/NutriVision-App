@@ -24,9 +24,7 @@ export default function DashboardScreen() {
   const todaysMeals = getTodaysMeals();
 
   // Fetch coaching tip when component mounts or meals change
-  useEffect(() => {
-    fetchCoachingTip();
-  }, [todaysMeals]);
+
 
   const fetchCoachingTip = async () => {
     if (!profile || todaysMeals.length === 0) {
@@ -58,7 +56,7 @@ export default function DashboardScreen() {
 
   const handleDeleteMeal = (mealId: string) => {
     Alert.alert('Delete Meal', 'Are you sure you want to delete this meal?', [
-      { text: 'Cancel', onPress: () => {} },
+      { text: 'Cancel', onPress: () => { } },
       {
         text: 'Delete',
         onPress: async () => {
@@ -198,23 +196,47 @@ export default function DashboardScreen() {
             </View>
           </View>
 
-          {/* Coaching Tip */}
-          {loadingCoaching ? (
-            <View className="bg-surface rounded-lg p-4 border border-border items-center">
-              <ActivityIndicator size="small" color="#4F46E5" />
+          {/* Coaching Tip Section */}
+          <View className="bg-surface rounded-lg p-4 border border-border gap-3">
+            <View className="flex-row items-center justify-between">
+              <Text className="text-sm font-semibold text-foreground">NutriCoach AI</Text>
+              {coachingTip && (
+                <TouchableOpacity onPress={fetchCoachingTip} disabled={loadingCoaching}>
+                  <Text className="text-xs text-primary">Refresh</Text>
+                </TouchableOpacity>
+              )}
             </View>
-          ) : coachingTip ? (
-            <View className="bg-primary rounded-lg p-4 gap-2">
-              <Text className="text-xs font-semibold text-white">💡 NutriVision Coach</Text>
-              <Text className="text-sm text-white leading-relaxed">{coachingTip}</Text>
-            </View>
-          ) : (
-            <View className="bg-surface rounded-lg p-4 border border-border">
-              <Text className="text-sm text-muted text-center">
-                Log your first meal to get personalized coaching tips!
-              </Text>
-            </View>
-          )}
+
+            {loadingCoaching ? (
+              <View className="py-4 items-center">
+                <ActivityIndicator size="small" color="#4F46E5" />
+                <Text className="text-xs text-muted mt-2">Consulting the coach...</Text>
+              </View>
+            ) : coachingTip ? (
+              <View className="bg-primary/10 rounded-lg p-3">
+                <Text className="text-xs font-semibold text-primary mb-1">💡 Suggestion</Text>
+                <Text className="text-sm text-foreground leading-relaxed">{coachingTip}</Text>
+              </View>
+            ) : (
+              <View className="items-center py-2">
+                <Text className="text-xs text-muted text-center mb-3">
+                  {todaysMeals.length > 0
+                    ? "Get a personalized analysis of your day so far."
+                    : "Log your first meal to unlock AI coaching!"}
+                </Text>
+
+                <TouchableOpacity
+                  onPress={fetchCoachingTip}
+                  disabled={todaysMeals.length === 0}
+                  className={`px-4 py-2 rounded-lg ${todaysMeals.length > 0 ? 'bg-primary' : 'bg-muted'}`}
+                >
+                  <Text className="text-white text-xs font-semibold">
+                    Ask NutriCoach
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
 
           {/* Meals List */}
           <View className="gap-2">
