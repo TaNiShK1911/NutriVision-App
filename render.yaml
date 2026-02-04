@@ -4,7 +4,7 @@ services:
   - type: web
     name: nutrivision-gemini-api
     env: python
-    buildCommand: pip install -r backend/requirements.txt
+    buildCommand: pip install -r backend/requirements_gemini.txt
     startCommand: gunicorn -w 4 -b 0.0.0.0:$PORT backend.gemini_server:app
     envVars:
       - key: GEMINI_API_KEY
@@ -15,7 +15,7 @@ services:
   - type: web
     name: nutrivision-model-api
     env: python
-    buildCommand: pip install -r backend/requirements.txt
+    buildCommand: pip install -r backend/requirements_model.txt
     startCommand: gunicorn -w 1 -b 0.0.0.0:$PORT backend.model_server:app
 
   # Service 3: Frontend Web App
