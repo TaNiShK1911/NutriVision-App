@@ -1,8 +1,11 @@
 flask
 flask-cors
-google-generativeai
+google-genai
 python-dotenv
 tensorflow-cpu
 pillow
 numpy
 gunicorn
+openai
+tenacity
+Flask-Limiter

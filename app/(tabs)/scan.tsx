@@ -7,6 +7,7 @@ import {
   Alert,
   ActivityIndicator,
   Image,
+  StyleSheet,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { CameraView, useCameraPermissions } from 'expo-camera';
@@ -15,7 +16,7 @@ import { useNutrition } from '@/lib/nutrition-context';
 import { getNutritionInfo, formatFoodLabel } from '@/lib/nutrition-logic';
 import { apiClient } from '@/lib/api-client';
 
-type ScanState = 'ready' | 'preview' | 'analyzing' | 'result';
+type ScanState = 'ready' | 'camera' | 'preview' | 'analyzing' | 'result';
 
 export default function ScanScreen() {
   const { profile, addMeal, getTodaysSummary } = useNutrition();
@@ -44,7 +45,7 @@ export default function ScanScreen() {
     );
   }
 
-  const handleCameraCapture = async () => {
+  const handleStartCamera = async () => {
     if (!permission?.granted) {
       const result = await requestPermission();
       if (!result.granted) {
@@ -52,15 +53,20 @@ export default function ScanScreen() {
         return;
       }
     }
+    setScanState('camera');
+  };
 
+  const capturePhoto = async () => {
     if (cameraRef.current) {
       try {
         const photo = await cameraRef.current.takePictureAsync({
           base64: true,
           quality: 0.8,
         });
-        setSelectedImage(photo.uri);
-        setScanState('preview');
+        if (photo) {
+          setSelectedImage(photo.uri);
+          setScanState('preview');
+        }
       } catch (error) {
         Alert.alert('Error', 'Failed to capture photo. Please try again.');
         console.error('Camera capture error:', error);
@@ -173,7 +179,7 @@ export default function ScanScreen() {
 
             {/* Camera Button */}
             <TouchableOpacity
-              onPress={handleCameraCapture}
+              onPress={handleStartCamera}
               className="bg-primary rounded-lg py-6 px-4 items-center"
             >
               <Text className="text-white font-semibold text-lg">📷 Take Photo</Text>
@@ -200,6 +206,35 @@ export default function ScanScreen() {
           </View>
         </ScrollView>
       </ScreenContainer>
+    );
+  }
+
+  // Camera State
+  if (scanState === 'camera') {
+    return (
+      <View style={{ flex: 1, backgroundColor: 'black' }}>
+        <CameraView
+          ref={cameraRef}
+          style={{ flex: 1 }}
+          facing="back"
+        >
+          <View className="flex-1 flex-col justify-end p-8 pb-12 gap-6">
+            <TouchableOpacity
+              onPress={capturePhoto}
+              className="self-center w-20 h-20 bg-white rounded-full border-4 border-gray-300 items-center justify-center"
+            >
+              <View className="w-16 h-16 bg-white rounded-full border-2 border-black" />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => setScanState('ready')}
+              className="self-center"
+            >
+              <Text className="text-white text-lg font-semibold">Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </CameraView>
+      </View>
     );
   }
 

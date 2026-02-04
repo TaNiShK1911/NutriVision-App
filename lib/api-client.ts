@@ -4,6 +4,7 @@
  */
 
 import axios, { AxiosInstance } from 'axios';
+import { Platform } from 'react-native';
 
 export interface FoodPredictionResponse {
   label: string;
@@ -29,7 +30,7 @@ class APIClient {
 
     this.geminiApi = axios.create({
       baseURL: geminiBaseUrl,
-      timeout: 15000,
+      timeout: 45000,
     });
   }
 
@@ -51,11 +52,30 @@ class APIClient {
         // If base64, send as JSON
         formData.append('image_base64', imageUri);
       } else {
-        // If file URI, create blob and append
-        const response = await fetch(imageUri);
-        const blob = await response.blob();
-        formData.append('image', blob, 'food.jpg');
+        const filename = imageUri.split('/').pop() || 'food.jpg';
+        const match = /\.(\w+)$/.exec(filename);
+        const type = match ? `image/${match[1]}` : 'image/jpeg';
+
+        if (Platform.OS === 'web') {
+          // On web, we need to convert the URI to a Blob
+          const response = await fetch(imageUri);
+          const blob = await response.blob();
+          formData.append('image', blob, filename);
+        } else {
+          // FIX for React Native: Send object with uri, type, name
+          // Do not use fetch(uri).blob() as it causes crashes on Android
+          // @ts-ignore - React Native FormData expects this object structure
+          formData.append('image', {
+            uri: imageUri,
+            name: filename,
+            type,
+          });
+        }
       }
+
+
+      console.log('Sending request to:', '/predict');
+      console.log('Base URL:', this.modelApi.defaults.baseURL);
 
       const result = await this.modelApi.post<FoodPredictionResponse>(
         '/predict',
@@ -63,6 +83,9 @@ class APIClient {
         {
           headers: {
             'Content-Type': 'multipart/form-data',
+          },
+          transformRequest: (data, headers) => {
+            return data;
           },
         }
       );
