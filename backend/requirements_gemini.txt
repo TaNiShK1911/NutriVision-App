@@ -1,3 +1,4 @@
+# Gemini Service Dependencies
 flask
 flask-cors
 google-genai
