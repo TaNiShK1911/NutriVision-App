@@ -1,3 +1,7 @@
+import os
+# Suppress TensorFlow logs
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import tensorflow as tf
@@ -6,16 +10,15 @@ import base64
 from io import BytesIO
 from PIL import Image
 import numpy as np
-import os
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for mobile app
 
 # Load your trained Keras model
-# Load your trained Keras model
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, '..', 'model', 'nutrivision_food101_mobilenetv2.h5')
-model = tf.keras.models.load_model(MODEL_PATH)
+# compile=False avoids the warning: "Compiled the loaded model, but the compiled metrics have yet to be built"
+model = tf.keras.models.load_model(MODEL_PATH, compile=False)
 
 # Load food labels
 LABELS_PATH = os.path.join(BASE_DIR, '..', 'model', 'food_labels.json')
