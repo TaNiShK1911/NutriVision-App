@@ -16,7 +16,7 @@ services:
     name: nutrivision-model-api
     env: python
     buildCommand: pip install --no-cache-dir -r backend/requirements_model.txt
-    startCommand: gunicorn -w 1 -b 0.0.0.0:$PORT backend.model_server:app
+    startCommand: gunicorn --timeout 120 -w 1 -b 0.0.0.0:$PORT backend.model_server:app
 
   # Service 3: Frontend Web App
   # This serves the Expo web export as a static site

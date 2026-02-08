@@ -17,13 +17,22 @@ CORS(app)  # Enable CORS for mobile app
 # Load your trained Keras model
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, '..', 'model', 'nutrivision_food101_mobilenetv2.h5')
-# compile=False avoids the warning: "Compiled the loaded model, but the compiled metrics have yet to be built"
-model = tf.keras.models.load_model(MODEL_PATH, compile=False)
+
+print(f"Loading Keras model from: {MODEL_PATH}...", flush=True)
+try:
+    # compile=False avoids the warning: "Compiled the loaded model, but the compiled metrics have yet to be built"
+    model = tf.keras.models.load_model(MODEL_PATH, compile=False)
+    print("Model loaded successfully!", flush=True)
+except Exception as e:
+    print(f"Error loading model: {e}", flush=True)
+    model = None
 
 # Load food labels
 LABELS_PATH = os.path.join(BASE_DIR, '..', 'model', 'food_labels.json')
+print(f"Loading labels from: {LABELS_PATH}...", flush=True)
 with open(LABELS_PATH, 'r') as f:
     labels = json.load(f)
+print(f"Loaded {len(labels)} labels.", flush=True)
 
 # Model configuration (adjust based on your model)
 MODEL_INPUT_SIZE = 224  # Change if your model uses different size (e.g., 299 for InceptionV3)

@@ -108,6 +108,18 @@ const config: ExpoConfig = {
       },
     ],
     [
+      "expo-camera",
+      {
+        cameraPermission: "Allow NutriVision to access your camera for scanning food.",
+      },
+    ],
+    [
+      "expo-image-picker",
+      {
+        photosPermission: "Allow NutriVision to access your photos to upload food images.",
+      },
+    ],
+    [
       "expo-splash-screen",
       {
         image: "./assets/images/splash-icon.png",
